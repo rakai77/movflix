@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.myflix.design_system.domain.model.InputWrapper
+import com.example.myflix.design_system.presentation.theme.Gray
 import com.example.myflix.design_system.presentation.theme.Gray15
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,7 +28,10 @@ fun FLixTextField(
     input: InputWrapper<String>,
     keyboardOptions: KeyboardOptions,
     visualTransformation: VisualTransformation,
-    @StringRes label: Int
+    trailingIcon: @Composable () -> Unit = {},
+    @StringRes label: Int,
+    @StringRes placeholder: Int,
+    onValueChange: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -42,17 +46,27 @@ fun FLixTextField(
                 .fillMaxWidth()
                 .padding(top = 4.dp),
             value = input.value,
+            placeholder = {
+                Text(
+                    text = stringResource(id = placeholder),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Gray
+                )
+            },
             shape = RoundedCornerShape(10.dp),
             singleLine = true,
             keyboardOptions = keyboardOptions,
+            textStyle = MaterialTheme.typography.labelMedium,
+            trailingIcon = trailingIcon,
             visualTransformation = visualTransformation,
             colors = TextFieldDefaults.textFieldColors(
                 textColor = Color.White,
                 placeholderColor = MaterialTheme.colorScheme.secondary,
-                containerColor = Gray15
-
+                containerColor = Gray15,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             ),
-            onValueChange = {},
+            onValueChange = onValueChange
         )
     }
 }
