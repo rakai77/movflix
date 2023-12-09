@@ -7,6 +7,7 @@ import com.example.myflix.auth.api.AuthFeature
 import com.example.myflix.auth.impl.presentation.screen.login.LoginScreen
 import com.example.myflix.auth.impl.presentation.screen.register.RegisterScreen
 import com.example.myflix.design_system.presentation.utils.composable
+import com.example.myflix.home.impl.presentation.HomeRoute
 
 class AuthFeatureImpl : AuthFeature {
     override val authRoute: String
@@ -23,6 +24,9 @@ class AuthFeatureImpl : AuthFeature {
             LoginScreen(
                 onToRegister = {
                     navController.navigate(AuthRoute.Register.route)
+                },
+                onToHome = {
+                    navController.navigate(HomeRoute.Home.route)
                 }
             )
         }
