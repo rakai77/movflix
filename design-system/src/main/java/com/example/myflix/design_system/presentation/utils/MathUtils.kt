@@ -6,15 +6,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 object MathUtils {
-
     fun lerp(
         start: Float,
         stop: Float,
         fraction: Float
     ) = start + (stop - start) * fraction.coerceIn(0f, 1f)
 
-    fun calculateRotateHeight(originalWidth: Float, originalHeight: Float, angelDegrees: Float) : Float {
-        val angelRadians = angelDegrees * (PI / 180).toFloat()
-        return (originalWidth * abs(sin(angelRadians))) + (originalHeight * abs(cos(angelRadians)))
+    fun calculateRotatedHeight(originalWidth: Float, originalHeight: Float, angleDegrees: Float): Float {
+        val angleRadians = angleDegrees * (PI / 180).toFloat()
+        return (originalWidth * abs(sin(angleRadians))) + (originalHeight * abs(cos(angleRadians)))
     }
 }
