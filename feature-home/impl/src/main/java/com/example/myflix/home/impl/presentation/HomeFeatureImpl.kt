@@ -4,6 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.example.myflix.design_system.presentation.utils.composable
+import com.example.myflix.design_system.presentation.utils.nonAnimationComposable
 import com.example.myflix.home.api.HomeFeature
 import com.example.myflix.home.impl.presentation.screen.home.HomeScreen
 
@@ -16,7 +17,7 @@ class HomeFeatureImpl : HomeFeature {
         navController: NavController,
         modifier: Modifier
     ) {
-        navGraphBuilder.composable(
+        navGraphBuilder.nonAnimationComposable(
             route = HomeRoute.Home.route
         ) {
             HomeScreen()

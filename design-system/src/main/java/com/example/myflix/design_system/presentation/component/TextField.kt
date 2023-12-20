@@ -59,10 +59,12 @@ fun FLixTextField(
             textStyle = MaterialTheme.typography.labelMedium,
             trailingIcon = trailingIcon,
             visualTransformation = visualTransformation,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.White,
-                placeholderColor = MaterialTheme.colorScheme.secondary,
-                containerColor = Gray15,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                focusedPlaceholderColor = MaterialTheme.colorScheme.secondary,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.secondary,
+                focusedContainerColor = Gray15,
+                unfocusedContainerColor = Gray15,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),

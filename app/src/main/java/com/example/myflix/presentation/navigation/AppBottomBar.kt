@@ -56,7 +56,7 @@ fun AppBottomBar(
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .shadow(4.dp, CircleShape)
                 .clip(CircleShape)
                 .background(SecondaryDark)
@@ -96,16 +96,24 @@ fun AppBottomBar(
                         .background(LightTransparent)
                         .onGloballyPositioned { layoutCoordinates ->
                             if (isSelected) {
-                                val parentLayoutCoordinates = layoutCoordinates.parentLayoutCoordinates!!
+                                val parentLayoutCoordinates =
+                                    layoutCoordinates.parentLayoutCoordinates!!
                                 val parentPosition = parentLayoutCoordinates.positionInRoot()
                                 val itemCenterX =
                                     layoutCoordinates.positionInRoot().x - parentPosition.x + layoutCoordinates.size.width / 2
                                 xIndicatorOffset = itemCenterX
                             }
-                        }
-                    ,
+                        },
                     selected = isSelected,
-                    onClick = { navController.navigate(it.route) },
+                    onClick = {
+                        navController.navigate(it.route) {
+                            popUpTo(homeFeature.homeRoute) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(id = icon),
