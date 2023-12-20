@@ -57,6 +57,8 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":feature-home:impl"))
     implementation(project(":feature-auth:impl"))
+    implementation(project(":feature-favorite:impl"))
+    implementation(project(":feature-profile:impl"))
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)

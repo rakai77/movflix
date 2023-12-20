@@ -35,18 +35,26 @@ import com.example.myflix.design_system.presentation.component.FlixBottomNavigat
 import com.example.myflix.design_system.presentation.theme.LightTransparent
 import com.example.myflix.design_system.presentation.theme.SecondaryDark
 import com.example.myflix.design_system.presentation.utils.drawCircleIndicator
+import com.example.myflix.favorite.api.FavoriteFeature
 import com.example.myflix.home.api.HomeFeature
+import com.example.myflix.profile.api.ProfileFeature
 
 @Composable
 fun AppBottomBar(
     modifier: Modifier,
     navController: NavController,
-    homeFeature: HomeFeature
+    homeFeature: HomeFeature,
+    favoriteFeature: FavoriteFeature,
+    profileFeature: ProfileFeature
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val destination = listOf(homeFeature.homeRoute)
+    val destination = listOf(
+        homeFeature.homeRoute,
+        favoriteFeature.favoriteRoute,
+        profileFeature.profileRoute
+    )
     var xIndicatorOffset by remember { mutableFloatStateOf(Float.NaN) }
     val xOffsetAnimated by animateFloatAsState(targetValue = xIndicatorOffset, label = "")
 

@@ -16,9 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import com.example.myflix.auth.api.AuthFeature
 import com.example.myflix.design_system.presentation.theme.MyFlixTheme
+import com.example.myflix.favorite.api.FavoriteFeature
 import com.example.myflix.home.api.HomeFeature
 import com.example.myflix.presentation.navigation.AppBottomBar
 import com.example.myflix.presentation.navigation.AppNavigation
+import com.example.myflix.profile.api.ProfileFeature
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -27,13 +29,15 @@ class MainActivity : ComponentActivity() {
 
     @Inject lateinit var authFeature: AuthFeature
     @Inject lateinit var homeFeature: HomeFeature
+    @Inject lateinit var favoriteFeature: FavoriteFeature
+    @Inject lateinit var profileFeature: ProfileFeature
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyFlixTheme {
                 // A surface container using the 'background' color from the theme
-                MyFlixApp(authFeature, homeFeature)
+                MyFlixApp(authFeature, homeFeature, favoriteFeature, profileFeature)
             }
         }
     }
@@ -42,7 +46,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyFlixApp(
     authFeature: AuthFeature,
-    homeFeature: HomeFeature
+    homeFeature: HomeFeature,
+    favoriteFeature: FavoriteFeature,
+    profileFeature: ProfileFeature
 ) {
 
     val navController = rememberNavController()
@@ -55,12 +61,17 @@ fun MyFlixApp(
             startDestination = authFeature.authRoute,
             navController = navController,
             authFeature = authFeature,
-            homeFeature = homeFeature
+            homeFeature = homeFeature,
+            favoriteFeature = favoriteFeature,
+            profileFeature = profileFeature
         )
 
         AppBottomBar(
             modifier = Modifier.clip(RoundedCornerShape(percent = 50)).background(Color.White),
             navController = navController,
-            homeFeature = homeFeature)
+            homeFeature = homeFeature,
+            favoriteFeature = favoriteFeature,
+            profileFeature = profileFeature
+        )
     }
 }
