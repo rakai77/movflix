@@ -1,4 +1,4 @@
-package com.example.myflix.core.data
+package com.example.myflix.core.data.source
 
 import com.example.myflix.core.R
 
