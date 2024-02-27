@@ -16,6 +16,7 @@ dagger = "2.45"
 hilt-compose = "1.0.0"
 compose-animation = "1.4.3"
 constraint-layout = "1.0.1"
+lottie="6.3.0"
 
 ktor="2.3.7"
 preferences-data-store="1.0.0"
@@ -39,6 +40,9 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 navigation-safe-args = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+
+# Lottie
+lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 # Dependency Injection
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }

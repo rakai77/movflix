@@ -1,7 +1,6 @@
 package com.example.myflix.auth.impl.presentation.screen.login
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,10 +16,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,7 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +41,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.myflix.auth.impl.R
 import com.example.myflix.auth.impl.presentation.BasicUiState
 import com.example.myflix.design_system.domain.model.PartialClickableItems
@@ -49,17 +56,27 @@ import com.example.myflix.design_system.presentation.component.FlixPartialClicka
 import com.example.myflix.design_system.presentation.theme.Gray
 import com.example.myflix.design_system.presentation.theme.Gray15
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
     onToRegister: () -> Unit,
     onSuccessLogin: () -> Unit
 ) {
-    val context = LocalContext.current
+
     val email by viewModel.emailInput
     val password by viewModel.passwordInput
     var isShouldShowPassword by remember {
         mutableStateOf(false)
+    }
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember {
+        mutableStateOf(false)
+    }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error))
+    val progress by animateLottieCompositionAsState(composition = composition)
+    var errorMessage by remember {
+        mutableStateOf("")
     }
 
     val uiState by viewModel.uiState.collectAsState(initial = BasicUiState.Idle)
@@ -72,7 +89,8 @@ fun LoginScreen(
 
             is BasicUiState.Error -> {
                 Log.e("Login", "Error: ${result.message}")
-                Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                errorMessage = result.message
+                showBottomSheet = true
             }
 
             else -> Unit
@@ -211,5 +229,32 @@ fun LoginScreen(
                 )
             )
         )
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                onDismissRequest = {
+                    showBottomSheet = false
+                },
+                sheetState = sheetState
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    LottieAnimation(
+                        modifier = Modifier.height(230.dp),
+                        contentScale = ContentScale.FillHeight,
+                        composition = composition,
+                        progress = { progress }
+                    )
+                    Text(text = errorMessage, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
     }
 }

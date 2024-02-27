@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.myflix.auth.impl.presentation.BasicUiState
 import com.example.myflix.core.data.source.local.AppDataStore
 import com.example.myflix.core.data.source.remote.dto.request.LoginRequest
-import com.example.myflix.core.data.source.remote.dto.response.AuthResponse
 import com.example.myflix.core.data.source.remote.dto.response.WebResponse
+import com.example.myflix.core.domain.model.Auth
 import com.example.myflix.core.domain.model.Resource
 import com.example.myflix.core.domain.usecase.AuthUseCase
 import com.example.myflix.core.presentation.BaseViewModel
@@ -31,7 +31,7 @@ class LoginViewModel @Inject constructor(
         private set
 
 
-    private val _uiState = MutableSharedFlow<BasicUiState<WebResponse<AuthResponse>>>()
+    private val _uiState = MutableSharedFlow<BasicUiState<WebResponse<Auth>>>()
     val uiState = _uiState.asSharedFlow()
 
 
