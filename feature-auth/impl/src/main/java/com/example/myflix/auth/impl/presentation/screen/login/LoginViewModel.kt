@@ -2,7 +2,7 @@ package com.example.myflix.auth.impl.presentation.screen.login
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
-import com.example.myflix.auth.impl.presentation.BasicUiState
+import com.example.myflix.core.presentation.BasicUiState
 import com.example.myflix.core.data.source.local.AppDataStore
 import com.example.myflix.core.data.source.remote.dto.request.LoginRequest
 import com.example.myflix.core.data.source.remote.dto.response.WebResponse

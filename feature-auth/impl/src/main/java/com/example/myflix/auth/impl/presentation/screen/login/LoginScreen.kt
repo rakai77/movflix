@@ -43,10 +43,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.myflix.auth.impl.R
-import com.example.myflix.auth.impl.presentation.BasicUiState
+import com.example.myflix.core.presentation.BasicUiState
 import com.example.myflix.design_system.domain.model.PartialClickableItems
 import com.example.myflix.design_system.domain.model.PartialClickableTextType
 import com.example.myflix.design_system.presentation.component.FLixTextField
@@ -74,7 +73,7 @@ fun LoginScreen(
         mutableStateOf(false)
     }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error))
-    val progress by animateLottieCompositionAsState(composition = composition)
+//    val progress by animateLottieCompositionAsState(composition = composition)
     var errorMessage by remember {
         mutableStateOf("")
     }
@@ -84,6 +83,7 @@ fun LoginScreen(
     LaunchedEffect(uiState) {
         when (val result = uiState) {
             is BasicUiState.Success -> {
+                viewModel.storeToken(result.data.data?.token.orEmpty())
                 onSuccessLogin()
             }
 
@@ -250,7 +250,6 @@ fun LoginScreen(
                         modifier = Modifier.height(230.dp),
                         contentScale = ContentScale.FillHeight,
                         composition = composition,
-                        progress = { progress }
                     )
                     Text(text = errorMessage, style = MaterialTheme.typography.bodyMedium)
                 }

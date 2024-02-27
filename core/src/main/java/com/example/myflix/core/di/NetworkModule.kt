@@ -3,7 +3,9 @@ package com.example.myflix.core.di
 import com.example.myflix.core.data.source.local.AppDataStore
 import com.example.myflix.core.data.source.remote.HttpClientFactory
 import com.example.myflix.core.data.source.remote.service.AuthService
+import com.example.myflix.core.data.source.remote.service.MovieService
 import com.example.myflix.core.data.source.remote.service.impl.AuthServiceImpl
+import com.example.myflix.core.data.source.remote.service.impl.MovieServiceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,4 +22,6 @@ class NetworkModule {
     @Provides
     fun provideAuthService(httpClient: HttpClient): AuthService = AuthServiceImpl(httpClient)
 
+    @Provides
+    fun provideMovieService(httpClient: HttpClient): MovieService = MovieServiceImpl(httpClient)
 }

@@ -3,6 +3,7 @@ package com.example.myflix.home.impl.presentation.screen.home
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,9 +21,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -40,15 +44,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.myflix.core.data.source.DataDummy
+import com.example.myflix.core.domain.model.MovieItem
+import com.example.myflix.core.presentation.BasicUiState
 import com.example.myflix.design_system.utils.carouselTransition
 import com.example.myflix.home.impl.R
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeViewModel
+) {
 
     var selectedCategoryIndex by rememberSaveable {
         mutableIntStateOf(0)
+    }
+
+    val uiState by viewModel.uiState.collectAsState(initial = BasicUiState.Idle)
+
+    LaunchedEffect(Unit) {
+        viewModel.getMovie("12")
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -68,9 +83,30 @@ fun HomeScreen() {
                 selectedCategoryIndex = index
             }
         )
-        MovieSlider(modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 24.dp, bottom = 88.dp))
+        when (val state = uiState) {
+            is BasicUiState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(36.dp),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
+
+            is BasicUiState.Success -> {
+                MovieSlider(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 24.dp, bottom = 88.dp),
+                    movies = state.data.data.orEmpty()
+                )
+            }
+
+            else -> Unit
+        }
     }
 }
 
@@ -156,11 +192,12 @@ fun MovieCategories(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MovieSlider(
-    modifier: Modifier
+    modifier: Modifier,
+    movies: List<MovieItem>
 ) {
 
     val pagerState = rememberPagerState {
-        DataDummy.movie.size
+        movies.size
     }
 
     HorizontalPager(
@@ -169,19 +206,19 @@ fun MovieSlider(
         contentPadding = PaddingValues(24.dp),
         modifier = modifier
     ) { index ->
-       DataDummy.movie.getOrNull(index)?.let { banner ->
-           Card(
-               modifier = Modifier.carouselTransition(index, pagerState),
-               shape = RoundedCornerShape(20.dp),
-               elevation = CardDefaults.cardElevation(10.dp)
-           ) {
-                Image(
+        movies.getOrNull(index)?.let { movie ->
+            Card(
+                modifier = Modifier.carouselTransition(index, pagerState),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(10.dp)
+            ) {
+                AsyncImage(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
-                    painter = painterResource(id = banner),
+                    model = movie.posterUrl,
                     contentDescription = null
                 )
-           }
-       }
+            }
+        }
     }
 }

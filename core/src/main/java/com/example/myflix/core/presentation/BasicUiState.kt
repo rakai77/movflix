@@ -1,4 +1,4 @@
-package com.example.myflix.auth.impl.presentation
+package com.example.myflix.core.presentation
 
 sealed class BasicUiState<out T> {
     data class Success<T>(val data: T) : BasicUiState<T>()
