@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.myflix.core.data.source.local.AppDataStore
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpRedirect
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
@@ -59,6 +60,10 @@ class HttpClientFactory(
                 setPrettyPrinting()
                 setLenient()
             }
+        }
+
+        install(HttpRedirect) {
+            checkHttpMethod = false
         }
 
         install(ResponseObserver) {

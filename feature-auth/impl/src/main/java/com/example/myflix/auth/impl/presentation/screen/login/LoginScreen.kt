@@ -1,5 +1,7 @@
 package com.example.myflix.auth.impl.presentation.screen.login
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +39,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.myflix.auth.impl.R
-import com.example.myflix.design_system.domain.model.InputWrapper
+import com.example.myflix.auth.impl.presentation.BasicUiState
 import com.example.myflix.design_system.domain.model.PartialClickableItems
 import com.example.myflix.design_system.domain.model.PartialClickableTextType
 import com.example.myflix.design_system.presentation.component.FLixTextField
@@ -44,23 +49,40 @@ import com.example.myflix.design_system.presentation.component.FlixPartialClicka
 import com.example.myflix.design_system.presentation.theme.Gray
 import com.example.myflix.design_system.presentation.theme.Gray15
 
-@Composable fun LoginScreen(
+@Composable
+fun LoginScreen(
+    viewModel: LoginViewModel,
     onToRegister: () -> Unit,
-    onToHome: () -> Unit
+    onSuccessLogin: () -> Unit
 ) {
-    var emailInput by remember {
-        mutableStateOf(InputWrapper(""))
-    }
-    var passwordInput by remember {
-        mutableStateOf(InputWrapper(""))
-    }
+    val context = LocalContext.current
+    val email by viewModel.emailInput
+    val password by viewModel.passwordInput
     var isShouldShowPassword by remember {
         mutableStateOf(false)
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState())
+    val uiState by viewModel.uiState.collectAsState(initial = BasicUiState.Idle)
+
+    LaunchedEffect(uiState) {
+        when (val result = uiState) {
+            is BasicUiState.Success -> {
+                onSuccessLogin()
+            }
+
+            is BasicUiState.Error -> {
+                Log.e("Login", "Error: ${result.message}")
+                Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> Unit
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Icon(
             modifier = Modifier.padding(start = 24.dp, top = 70.dp),
@@ -73,21 +95,19 @@ import com.example.myflix.design_system.presentation.theme.Gray15
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(top = 36.dp),
-            input = emailInput,
+            input = email,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             visualTransformation = VisualTransformation.None,
             label = R.string.email_address_txt,
             placeholder = R.string.email_address_placeholder,
-            onValueChange = {
-                emailInput = emailInput.copy(it)
-            }
+            onValueChange = viewModel::onEmailInput
         )
         FLixTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(top = 20.dp),
-            input = passwordInput,
+            input = password,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (isShouldShowPassword) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -105,9 +125,7 @@ import com.example.myflix.design_system.presentation.theme.Gray15
             },
             label = R.string.password_txt,
             placeholder = R.string.password_placeholder,
-            onValueChange = {
-                passwordInput = passwordInput.copy(it)
-            }
+            onValueChange = viewModel::onPasswordInput
         )
         Text(
             modifier = Modifier
@@ -126,9 +144,11 @@ import com.example.myflix.design_system.presentation.theme.Gray15
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(top = 36.dp),
+            enabled = (email.error.isNullOrEmpty() && password.error.isNullOrEmpty() && email.value.isNotEmpty() && password.value.isNotEmpty()),
+            isLoading = (uiState is BasicUiState.Loading),
             buttonText = R.string.sign_in_txt
         ) {
-            onToHome.invoke()
+            viewModel.login()
         }
         Text(
             modifier = Modifier

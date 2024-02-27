@@ -1,12 +1,14 @@
 package com.example.myflix.auth.impl
 
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.example.myflix.auth.api.AuthFeature
 import com.example.myflix.auth.impl.presentation.screen.login.LoginScreen
+import com.example.myflix.auth.impl.presentation.screen.login.LoginViewModel
 import com.example.myflix.auth.impl.presentation.screen.register.RegisterScreen
-import com.example.myflix.design_system.presentation.utils.composable
+import com.example.myflix.design_system.utils.composable
 import com.example.myflix.home.impl.presentation.HomeRoute
 
 class AuthFeatureImpl : AuthFeature {
@@ -21,11 +23,13 @@ class AuthFeatureImpl : AuthFeature {
         navGraphBuilder.composable(
             route = AuthRoute.Login.route
         ) {
+            val viewModel = hiltViewModel<LoginViewModel>()
             LoginScreen(
+                viewModel = viewModel,
                 onToRegister = {
                     navController.navigate(AuthRoute.Register.route)
                 },
-                onToHome = {
+                onSuccessLogin = {
                     navController.navigate(HomeRoute.Home.route)
                 }
             )

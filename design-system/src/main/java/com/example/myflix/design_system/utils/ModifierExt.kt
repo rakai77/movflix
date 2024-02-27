@@ -1,4 +1,4 @@
-package com.example.myflix.design_system.presentation.utils
+package com.example.myflix.design_system.utils
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlin.math.absoluteValue
 
-fun Modifier.animatedScale() = composed {
+fun Modifier.animatedScale(isEnabled: Boolean = true) = composed {
     var selected by remember {
         mutableStateOf(false)
     }
@@ -31,19 +31,21 @@ fun Modifier.animatedScale() = composed {
     val scale by animateFloatAsState(if (selected) 0.8f else 1f, label = "")
 
     this.let {
-        this
-            .scale(scale)
-            .pointerInput(selected) {
-                awaitPointerEventScope {
-                    selected = if (selected) {
-                        waitForUpOrCancellation()
-                        false
-                    } else {
-                        awaitFirstDown(false)
-                        true
+        if (isEnabled) {
+            this
+                .scale(scale)
+                .pointerInput(selected) {
+                    awaitPointerEventScope {
+                        selected = if (selected) {
+                            waitForUpOrCancellation()
+                            false
+                        } else {
+                            awaitFirstDown(false)
+                            true
+                        }
                     }
                 }
-            }
+        } else this
     }
 }
 

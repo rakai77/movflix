@@ -34,7 +34,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.myflix.design_system.presentation.component.FlixBottomNavigationItem
 import com.example.myflix.design_system.presentation.theme.LightTransparent
 import com.example.myflix.design_system.presentation.theme.SecondaryDark
-import com.example.myflix.design_system.presentation.utils.drawCircleIndicator
+import com.example.myflix.design_system.utils.drawCircleIndicator
 import com.example.myflix.favorite.api.FavoriteFeature
 import com.example.myflix.home.api.HomeFeature
 import com.example.myflix.profile.api.ProfileFeature

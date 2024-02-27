@@ -56,6 +56,9 @@ dependencies {
     // Networking
     implementation(libs.bundles.ktor)
 
+    // Preferences Data Store
+    api(libs.bundles.data.store)
+
     // Hilt Dagger
     implementation(libs.bundles.hilt.dagger)
     kapt(libs.hilt.android.compiler)

@@ -1,4 +1,4 @@
-package com.example.myflix.design_system.presentation.utils
+package com.example.myflix.design_system.utils
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween

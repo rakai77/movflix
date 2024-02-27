@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,7 +20,6 @@ import com.example.myflix.design_system.domain.model.InputWrapper
 import com.example.myflix.design_system.presentation.theme.Gray
 import com.example.myflix.design_system.presentation.theme.Gray15
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FLixTextField(
     modifier: Modifier,
@@ -61,6 +59,7 @@ fun FLixTextField(
             visualTransformation = visualTransformation,
             colors = TextFieldDefaults.colors(
                 focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
                 focusedPlaceholderColor = MaterialTheme.colorScheme.secondary,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.secondary,
                 focusedContainerColor = Gray15,
@@ -70,5 +69,13 @@ fun FLixTextField(
             ),
             onValueChange = onValueChange
         )
+        if (input.error != null && input.value.isNotEmpty()) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = input.error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }

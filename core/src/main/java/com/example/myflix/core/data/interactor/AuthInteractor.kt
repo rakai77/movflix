@@ -10,9 +10,10 @@ import com.example.myflix.core.domain.repository.AuthRepository
 import com.example.myflix.core.domain.usecase.AuthUseCase
 import com.example.myflix.core.utils.execute
 import kotlinx.coroutines.flow.Flow
-import kotlin.coroutines.coroutineContext
+import kotlin.coroutines.CoroutineContext
 
 class AuthInteractor constructor(
+    private val coroutineContext: CoroutineContext,
     private val authRepository: AuthRepository
 ) : AuthUseCase, SafeApiCall {
     override suspend fun login(request: LoginRequest): Flow<Resource<WebResponse<AuthResponse>>> {

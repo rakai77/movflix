@@ -3,7 +3,7 @@ package com.example.myflix.profile.impl.presentation
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import com.example.myflix.design_system.presentation.utils.nonAnimationComposable
+import com.example.myflix.design_system.utils.nonAnimationComposable
 import com.example.myflix.profile.api.ProfileFeature
 import com.example.myflix.profile.impl.presentation.screen.ProfileScreen
 
