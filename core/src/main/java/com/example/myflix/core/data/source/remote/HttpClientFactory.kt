@@ -51,7 +51,7 @@ class HttpClientFactory(
                         BearerTokens(it, "")
                     }
                 }
-//                sendWithoutRequest { true }
+                sendWithoutRequest { true }
             }
         }
 

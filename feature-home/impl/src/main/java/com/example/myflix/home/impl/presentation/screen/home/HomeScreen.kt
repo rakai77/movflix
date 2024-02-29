@@ -62,7 +62,7 @@ fun HomeScreen(
 
     val uiState by viewModel.uiState.collectAsState(initial = BasicUiState.Idle)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(selectedCategoryIndex) {
         viewModel.getMovie("12")
     }
 
@@ -100,7 +100,7 @@ fun HomeScreen(
                 MovieSlider(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 24.dp, bottom = 88.dp),
+                        .padding(bottom = 88.dp),
                     movies = state.data.data.orEmpty()
                 )
             }

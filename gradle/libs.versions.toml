@@ -18,6 +18,7 @@ compose-animation = "1.4.3"
 constraint-layout = "1.0.1"
 lottie="6.3.0"
 coil="2.5.0"
+splash-api="1.0.0"
 
 ktor="2.3.7"
 preferences-data-store="1.0.0"
@@ -48,6 +49,8 @@ lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" 
 # Coil
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
+# Splash API
+splash-api = { module = "androidx.core:core-splashscreen", version.ref = "splash-api" }
 
 # Dependency Injection
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
