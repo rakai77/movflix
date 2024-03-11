@@ -1,11 +1,13 @@
 package com.example.myflix.favorite.impl.presentation
 
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.example.myflix.design_system.utils.nonAnimationComposable
 import com.example.myflix.favorite.api.FavoriteFeature
 import com.example.myflix.favorite.impl.presentation.screen.FavoriteScreen
+import com.example.myflix.favorite.impl.presentation.screen.FavoriteViewModel
 
 class FavoriteFeatureImpl : FavoriteFeature {
     override val favoriteRoute: String
@@ -19,7 +21,10 @@ class FavoriteFeatureImpl : FavoriteFeature {
         navGraphBuilder.nonAnimationComposable(
             route = FavoriteRoute.Favorite.route
         ) {
-            FavoriteScreen()
+            val viewModel: FavoriteViewModel = hiltViewModel()
+            FavoriteScreen(
+                viewModel = viewModel
+            )
         }
     }
 }

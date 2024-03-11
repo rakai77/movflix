@@ -8,4 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface MovieUseCase {
 
     suspend fun getMovie(genre: String) : Flow<Resource<WebResponse<List<MovieItem>>>>
+    suspend fun getMovieDetail(movieId: String) : Flow<Resource<WebResponse<MovieItem>>>
+    suspend fun storeWatchList(movieId: String): Flow<Resource<WebResponse<MovieItem>>>
+    suspend fun getWatchList(): Flow<Resource<WebResponse<List<MovieItem>>>>
 }
