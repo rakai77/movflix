@@ -19,9 +19,9 @@ constraint-layout = "1.0.1"
 lottie="6.3.0"
 coil="2.5.0"
 splash-api="1.0.0"
-
 ktor="2.3.7"
 preferences-data-store="1.0.0"
+haze="0.6.2"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -66,6 +66,8 @@ compose-animation = { module = "androidx.compose.animation:animation", version.r
 # constrain layout
 constraint-layout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraint-layout" }
 
+# Blur
+haze = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 
 # Networking
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
