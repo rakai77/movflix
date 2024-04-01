@@ -1,5 +1,8 @@
 package com.example.myflix.home.impl.presentation.screen.movie_detail
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.myflix.core.data.source.remote.dto.response.WebResponse
 import com.example.myflix.core.domain.model.MovieItem
@@ -21,8 +24,7 @@ class MovieDetailViewModel @Inject constructor(
     private var _getMovieState = MutableSharedFlow<BasicUiState<WebResponse<MovieItem>>>()
     val getMovieUiState = _getMovieState.asSharedFlow()
 
-    private var _storeWatchListState = MutableSharedFlow<BasicUiState<WebResponse<MovieItem>>>()
-    val storeWatchListUiStateState = _storeWatchListState.asSharedFlow()
+    var isUserWatchList by mutableStateOf(false)
 
     fun getMovie(movieId: String) {
         viewModelScope.launch {
@@ -47,14 +49,21 @@ class MovieDetailViewModel @Inject constructor(
         viewModelScope.launch {
             movieUseCase.storeWatchList(movieId).runFlow {
                 when (it) {
-                    is Resource.Loading -> {
-                        _storeWatchListState.emit(BasicUiState.Loading)
-                    }
                     is Resource.Success -> {
-                        _storeWatchListState.emit(BasicUiState.Success(it.data))
+                        isUserWatchList = true
                     }
-                    is Resource.Error -> {
-                        _storeWatchListState.emit(BasicUiState.Error(it.errorCode, it.message))
+                    else -> Unit
+                }
+            }
+        }
+    }
+
+    fun removeWatchList(movieId: String) {
+        viewModelScope.launch {
+            movieUseCase.removeWatchList(movieId).runFlow {
+                when(it) {
+                    is Resource.Success -> {
+                        isUserWatchList = false
                     }
                     else -> Unit
                 }

@@ -68,10 +68,7 @@ fun MovieDetailScreen(
 ) {
 
     val getMovieUiState by viewModel.getMovieUiState.collectAsState(BasicUiState.Idle)
-    val storeWatchListUiState by viewModel.storeWatchListUiStateState.collectAsState(BasicUiState.Idle)
-
     val hazeState = remember { HazeState() }
-
     var isUserWatchList: Boolean by remember {
         mutableStateOf(false)
     }
@@ -80,19 +77,14 @@ fun MovieDetailScreen(
         viewModel.getMovie(movieId)
     }
 
+    LaunchedEffect(viewModel.isUserWatchList) {
+        isUserWatchList = viewModel.isUserWatchList
+    }
+
     LaunchedEffect(getMovieUiState) {
         when (val state = getMovieUiState) {
             is BasicUiState.Success -> {
-                isUserWatchList = state.data.data?.isUserWatchList ?: false
-            }
-            else -> Unit
-        }
-    }
-
-    LaunchedEffect(storeWatchListUiState) {
-        when (val state = storeWatchListUiState) {
-            is BasicUiState.Success -> {
-                isUserWatchList = true
+                viewModel.isUserWatchList = state.data.data?.isUserWatchList ?: false
             }
             else -> Unit
         }
@@ -111,7 +103,9 @@ fun MovieDetailScreen(
                     movie = state.data.data,
                     isMovieWatchlist = isUserWatchList,
                     onWatchlistClick = {
-                        if (!it) {
+                        if (it) {
+                            viewModel.removeWatchList(movieId)
+                        } else {
                             viewModel.storeWatchList(movieId)
                         }
                     },
@@ -124,7 +118,8 @@ fun MovieDetailScreen(
                     movie = state.data.data
                 )
                 OverviewSection(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(top = 24.dp)
                         .padding(horizontal = 24.dp),
                     movie = state.data.data
@@ -266,7 +261,7 @@ fun MovieHeaderSection(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .height(24.dp),
-                rating = Random.nextInt(1,5)
+                rating = movie?.rating ?: 0
             )
         }
     }
@@ -298,10 +293,10 @@ fun CastSection(
                         .height(160.dp)
                         .clip(RoundedCornerShape(16.dp))
                 ) {
-                    Image(
-                        modifier = Modifier.fillMaxWidth(),
+                    AsyncImage(
+                        model = "https://i.pravatar.cc/150?u=${it}",
+                        modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
-                        painter = painterResource(id = randomPersonImage()),
                         contentDescription = null
                     )
                     Box(

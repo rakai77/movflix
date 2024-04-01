@@ -26,6 +26,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,12 +69,16 @@ fun LoginScreen(
     var isShouldShowPassword by remember {
         mutableStateOf(false)
     }
+    val isShouldButtonEnabled by remember {
+        derivedStateOf {
+            (email.error.isNullOrEmpty() && password.error.isNullOrEmpty() && email.value.isNotEmpty() && password.value.isNotEmpty())
+        }
+    }
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember {
         mutableStateOf(false)
     }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error))
-//    val progress by animateLottieCompositionAsState(composition = composition)
     var errorMessage by remember {
         mutableStateOf("")
     }
@@ -162,7 +167,7 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(top = 36.dp),
-            enabled = (email.error.isNullOrEmpty() && password.error.isNullOrEmpty() && email.value.isNotEmpty() && password.value.isNotEmpty()),
+            enabled = isShouldButtonEnabled,
             isLoading = (uiState is BasicUiState.Loading),
             buttonText = R.string.sign_in_txt
         ) {

@@ -63,6 +63,22 @@ class MovieInteractor constructor(
         }
     }
 
+    override suspend fun removeWatchList(movieId: String): Flow<Resource<WebResponse<MovieItem>>> {
+        return execute(coroutineContext) {
+            safeApiCall {
+                movieRepository.removeWatchList(movieId).run {
+                    WebResponse(
+                        data?.toDomain(),
+                        success,
+                        message,
+                        statusCode,
+                        error
+                    )
+                }
+            }
+        }
+    }
+
     override suspend fun getWatchList(): Flow<Resource<WebResponse<List<MovieItem>>>> {
         return execute(coroutineContext) {
             safeApiCall {

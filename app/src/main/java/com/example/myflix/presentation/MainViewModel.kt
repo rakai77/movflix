@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myflix.auth.impl.AuthRoute
 import com.example.myflix.core.data.source.local.AppDataStore
 import com.example.myflix.core.presentation.BaseViewModel
-import com.example.myflix.home.impl.presentation.HomeRoute
+import com.example.myflix.home.api.HomeRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

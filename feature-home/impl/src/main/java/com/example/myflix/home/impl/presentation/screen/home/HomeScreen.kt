@@ -2,7 +2,7 @@ package com.example.myflix.home.impl.presentation.screen.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,24 +11,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.myflix.core.data.source.DataDummy
 import com.example.myflix.core.domain.model.MovieItem
@@ -171,25 +173,37 @@ fun MovieCategories(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit
 ) {
-    LazyRow(
-        modifier = modifier.selectableGroup(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        contentPadding = PaddingValues(horizontal = 24.dp)
-    ) {
-        itemsIndexed(DataDummy.categories) { index, category ->
-            val isSelected = selectedIndex == index
-            Text(
-                text = category,
-                style = if (isSelected) MaterialTheme.typography.titleSmall else MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.selectable(
-                    selected = isSelected,
-                    onClick = {
-                        onItemSelected(index)
-                    }
-                )
+    ScrollableTabRow(
+        modifier = modifier,
+        selectedTabIndex = selectedIndex,
+        containerColor = MaterialTheme.colorScheme.background,
+        edgePadding = 24.dp,
+        divider = {},
+        indicator = { tabPositions ->
+            Box(
+                modifier = Modifier
+                    .tabIndicatorOffset(tabPositions[selectedIndex])
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(MaterialTheme.colorScheme.primary)
             )
+        }
+    ) {
+        DataDummy.categories.forEachIndexed { index, category ->
+            val isSelected by remember {
+                mutableStateOf(selectedIndex == index)
+            }
+            Tab(
+                selected = isSelected,
+                onClick = { onItemSelected(index) },
+                modifier = Modifier.padding(5.dp).zIndex(1f)
+            ) {
+                Text(
+                    text = category,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
     }
 }

@@ -48,6 +48,7 @@ android {
 
 dependencies {
 
+    api(project(":feature-home:api"))
     api(project(":feature-favorite:api"))
     api(project(":design-system"))
     implementation(project(":core"))

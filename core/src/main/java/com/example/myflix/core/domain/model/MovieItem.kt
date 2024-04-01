@@ -12,5 +12,6 @@ data class MovieItem(
     val videoUrl: String? = null,
     val category: List<String>? = null,
     val cast: List<String>? = null,
-    val isUserWatchList: Boolean? = null
+    val isUserWatchList: Boolean? = null,
+    var rating: Int? = null
 )

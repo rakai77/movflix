@@ -20,6 +20,10 @@ class MovieRepositoryImpl constructor(
         return movieService.storeWatchList(movieId)
     }
 
+    override suspend fun removeWatchList(movieId: String): WebResponse<MovieItemResponse> {
+        return movieService.removeWatchList(movieId)
+    }
+
     override suspend fun getWatchList(): WebResponse<List<MovieItemResponse>> {
         return movieService.getWatchList()
     }

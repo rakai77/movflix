@@ -1,4 +1,4 @@
-package com.example.myflix.home.impl.presentation
+package com.example.myflix.home.api
 
 sealed class HomeRoute(val route: String) {
     object Home: HomeRoute("home")

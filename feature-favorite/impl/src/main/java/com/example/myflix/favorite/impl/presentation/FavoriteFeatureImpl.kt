@@ -8,6 +8,7 @@ import com.example.myflix.design_system.utils.nonAnimationComposable
 import com.example.myflix.favorite.api.FavoriteFeature
 import com.example.myflix.favorite.impl.presentation.screen.FavoriteScreen
 import com.example.myflix.favorite.impl.presentation.screen.FavoriteViewModel
+import com.example.myflix.home.api.HomeRoute
 
 class FavoriteFeatureImpl : FavoriteFeature {
     override val favoriteRoute: String
@@ -23,7 +24,10 @@ class FavoriteFeatureImpl : FavoriteFeature {
         ) {
             val viewModel: FavoriteViewModel = hiltViewModel()
             FavoriteScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onMovieClick = { movieId ->
+                    navController.navigate(HomeRoute.MovieDetail.route.replace("{movieId}", movieId))
+                }
             )
         }
     }

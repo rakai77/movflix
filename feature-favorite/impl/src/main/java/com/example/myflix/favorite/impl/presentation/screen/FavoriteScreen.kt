@@ -1,5 +1,6 @@
 package com.example.myflix.favorite.impl.presentation.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -20,6 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -28,12 +32,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.myflix.core.domain.model.MovieItem
 import com.example.myflix.core.presentation.BasicUiState
+import com.example.myflix.design_system.utils.showShimmer
 import com.example.myflix.favorite.impl.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
-    viewModel: FavoriteViewModel
+    viewModel: FavoriteViewModel,
+    onMovieClick: (String) -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsState(BasicUiState.Idle)
@@ -62,7 +68,9 @@ fun FavoriteScreen(
         when (val state = uiState) {
             is BasicUiState.Success -> {
                 LazyVerticalGrid(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(24.dp),
@@ -72,7 +80,10 @@ fun FavoriteScreen(
                         ImageItem(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .aspectRatio((2.0 / 3.0).toFloat()),
+                                .aspectRatio((2.0 / 3.0).toFloat())
+                                .clickable {
+                                    onMovieClick((it.id ?: 0).toString())
+                                },
                             movie = it
                         )
                     }
@@ -88,10 +99,18 @@ fun ImageItem(
     modifier: Modifier,
     movie: MovieItem
 ) {
+    var showShimmer by remember {
+        mutableStateOf(true)
+    }
     AsyncImage(
-        modifier = modifier.clip(RoundedCornerShape(16.dp)),
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .showShimmer(showShimmer),
         contentScale = ContentScale.Crop,
         model = movie.posterUrl,
-        contentDescription = null
+        contentDescription = null,
+        onSuccess = {
+            showShimmer = false
+        }
     )
 }

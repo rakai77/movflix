@@ -9,7 +9,7 @@ import com.example.myflix.auth.impl.presentation.screen.login.LoginScreen
 import com.example.myflix.auth.impl.presentation.screen.login.LoginViewModel
 import com.example.myflix.auth.impl.presentation.screen.register.RegisterScreen
 import com.example.myflix.design_system.utils.composable
-import com.example.myflix.home.impl.presentation.HomeRoute
+import com.example.myflix.home.api.HomeRoute
 
 class AuthFeatureImpl : AuthFeature {
     override val authRoute: String

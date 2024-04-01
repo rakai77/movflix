@@ -6,6 +6,7 @@ import com.example.myflix.core.data.source.remote.dto.response.WebResponse
 import com.example.myflix.core.data.source.remote.service.MovieService
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -30,6 +31,17 @@ class MovieServiceImpl(
 
     override suspend fun storeWatchList(movieId: String): WebResponse<MovieItemResponse> {
         return httpClient.post {
+            url(HttpRoutes.WATCH_LIST)
+            setBody(
+                mapOf(
+                    "movieId" to movieId
+                )
+            )
+        }.body()
+    }
+
+    override suspend fun removeWatchList(movieId: String): WebResponse<MovieItemResponse> {
+        return httpClient.delete {
             url(HttpRoutes.WATCH_LIST)
             setBody(
                 mapOf(

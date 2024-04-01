@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.myflix.design_system.utils.composable
 import com.example.myflix.design_system.utils.nonAnimationComposable
 import com.example.myflix.home.api.HomeFeature
+import com.example.myflix.home.api.HomeRoute
 import com.example.myflix.home.impl.presentation.screen.home.HomeScreen
 import com.example.myflix.home.impl.presentation.screen.home.HomeViewModel
 import com.example.myflix.home.impl.presentation.screen.movie_detail.MovieDetailScreen
