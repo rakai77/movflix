@@ -1,7 +1,6 @@
 package com.example.myflix.home.impl.presentation.screen.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -37,20 +37,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.myflix.core.data.source.DataDummy
 import com.example.myflix.core.domain.model.MovieItem
-import com.example.myflix.core.presentation.BasicUiState
+import com.example.myflix.core.domain.model.User
 import com.example.myflix.design_system.utils.carouselTransition
+import com.example.myflix.design_system.utils.showShimmer
 import com.example.myflix.home.impl.R
 
 @Composable
@@ -63,15 +68,20 @@ fun HomeScreen(
         mutableIntStateOf(0)
     }
 
-    val uiState by viewModel.uiState.collectAsState(initial = BasicUiState.Idle)
+    val uiState by viewModel.uiState.collectAsState()
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.movie))
+
+    LaunchedEffect(Unit) {
+        viewModel.getProfile()
+    }
 
     LaunchedEffect(selectedCategoryIndex) {
-        viewModel.getMovie("12")
+        viewModel.getMovie(((selectedCategoryIndex + 1) * 12).toString())
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
         HeaderSection(
-            name = "Welcome",
+            user = uiState.profile,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp)
@@ -86,50 +96,68 @@ fun HomeScreen(
                 selectedCategoryIndex = index
             }
         )
-        when (val state = uiState) {
-            is BasicUiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 88.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            MovieSlider(
+                modifier = Modifier.fillMaxSize(),
+                movies = uiState.movies
+            ) { movie ->
+                movie.id?.let {
+                    onMovieClick.invoke(it.toString())
+                }
+            }
+            if (uiState.isMoviesLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(36.dp),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            if (!uiState.isMoviesLoading && uiState.movies.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(36.dp),
+                    LottieAnimation(
+                        modifier = Modifier.height(230.dp),
+                        contentScale = ContentScale.FillHeight,
+                        composition = composition,
+                        iterations = LottieConstants.IterateForever
+                    )
+                    Text(
+                        text = stringResource(id = R.string.empty_movie_msg),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            textAlign = TextAlign.Center
+                        ),
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
-
-            is BasicUiState.Success -> {
-                MovieSlider(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 88.dp),
-                    movies = state.data.data.orEmpty()
-                ) { movie ->
-                    movie.id?.let {
-                        onMovieClick.invoke(it.toString())
-                    }
-                }
-            }
-
-            else -> Unit
         }
     }
 }
 
 @Composable
 fun HeaderSection(
-    name: String,
+    user: User?,
     modifier: Modifier
 ) {
+    var isShouldShowImageShimmer by remember {
+        mutableStateOf(true)
+    }
 
     val titleSpan = buildAnnotatedString {
-        withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
             append(stringResource(id = R.string.hello_text))
         }
         append(" ")
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
-            append(name)
+        withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+            append(user?.detail?.username.orEmpty())
             append(",")
         }
     }
@@ -155,14 +183,18 @@ fun HeaderSection(
                 style = MaterialTheme.typography.labelMedium
             )
         }
-        Image(
+        AsyncImage(
+            model = user?.detail?.profilePictureUrl,
             modifier = Modifier
                 .padding(start = 16.dp)
                 .size(56.dp)
-                .clip(CircleShape),
+                .clip(CircleShape)
+                .showShimmer(isShouldShowImageShimmer),
             contentScale = ContentScale.Crop,
-            painter = painterResource(id = R.drawable.person_five),
-            contentDescription = null
+            contentDescription = null,
+            onSuccess = {
+                isShouldShowImageShimmer = false
+            }
         )
     }
 }
@@ -196,7 +228,9 @@ fun MovieCategories(
             Tab(
                 selected = isSelected,
                 onClick = { onItemSelected(index) },
-                modifier = Modifier.padding(5.dp).zIndex(1f)
+                modifier = Modifier
+                    .padding(horizontal = 6.dp, vertical = 4.dp)
+                    .zIndex(1f)
             ) {
                 Text(
                     text = category,
@@ -218,6 +252,10 @@ fun MovieSlider(
 
     val pagerState = rememberPagerState {
         movies.size
+    }
+
+    LaunchedEffect(movies) {
+        pagerState.animateScrollToPage(0)
     }
 
     HorizontalPager(

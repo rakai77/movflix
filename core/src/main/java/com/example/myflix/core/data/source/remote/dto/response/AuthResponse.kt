@@ -9,20 +9,6 @@ data class AuthResponse(
     val token: String? = null
 )
 
-data class DetailResponse(
-    val gender: String? = null,
-    val watchList: List<String>? = null,
-    val birthDate: String? = null,
-    val email: String? = null,
-    val username: String? = null
-)
-
-data class UserResponse(
-    val id: String? = null,
-    val detail: DetailResponse? = null
-)
-
-
 fun AuthResponse.toDomain(): Auth = Auth(
     User(
         this.user?.id,

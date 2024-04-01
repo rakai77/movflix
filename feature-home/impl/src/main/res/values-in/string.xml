@@ -6,4 +6,5 @@
     <string name="remove_from_watch_list_txt">Hapus dari Daftar Tonton</string>
     <string name="cast_txt">Pemeran</string>
     <string name="overview_txt">Ringkasan</string>
+    <string name="empty_movie_msg">Ups, film dengan kategory saat ini tidak tersedia. Coba dengan kategori lain!</string>
 </resources>

@@ -6,4 +6,5 @@
     <string name="remove_from_watch_list_txt">Remove from Watch List</string>
     <string name="cast_txt">Cast</string>
     <string name="overview_txt">Overview</string>
+    <string name="empty_movie_msg">Ups, movie with current category is not exist. Try with another category!</string>
 </resources>
